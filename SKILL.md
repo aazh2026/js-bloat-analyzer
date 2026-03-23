@@ -1,6 +1,55 @@
 ---
 name: js-bloat-analyzer
 description: 分析 JavaScript/Node.js 项目的依赖膨胀问题，识别冗余包并推荐替代方案。适用于清理项目依赖、优化 bundle 大小、提升安全性和可维护性。
+
+input_schema:
+  project_path:
+    type: string
+    required: true
+    description: 项目根目录路径
+  check_depth:
+    type: string
+    required: false
+    default: "deep"
+    enum: ["basic", "deep"]
+    description: 检查深度
+  auto_fix:
+    type: boolean
+    required: false
+    default: false
+    description: 是否自动应用修复
+
+output_schema:
+  summary:
+    type: object
+    properties:
+      total_packages: { type: integer }
+      redundant_packages: { type: integer }
+      estimated_savings: { type: string }
+  redundant_deps:
+    type: array
+    items:
+      type: object
+      properties:
+        name: { type: string }
+        type: { type: string, enum: ["pillar_1", "pillar_2", "pillar_3"] }
+        reason: { type: string }
+        replacement: { type: string }
+        action: { type: string, enum: ["inline", "remove", "replace"] }
+  recommendations:
+    type: array
+    items: { type: string }
+
+verification:
+  - check: "output.summary.total_packages >= 0"
+    severity: error
+  - check: "len(output.redundant_deps) == output.summary.redundant_packages"
+    severity: error
+  - check: "all dep in output.redundant_deps has dep.name and dep.replacement"
+    severity: error
+  - check: "output.summary.estimated_savings matches /\\d+\\.\\d+MB|\\d+KB/"
+    severity: warning
+
 ---
 
 # JS 依赖膨胀分析器
