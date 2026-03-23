@@ -1,6 +1,14 @@
 ---
 name: js-bloat-analyzer
-description: 分析 JavaScript/Node.js 项目的依赖膨胀问题，识别冗余包并推荐替代方案。适用于清理项目依赖、优化 bundle 大小、提升安全性和可维护性。
+description: 分析 JavaScript/Node.js 项目的依赖膨胀问题，识别冗余包并推荐替代方案。
+
+**触发场景：**
+- 项目依赖过多，需要清理优化
+- bundle 体积过大，需要找出冗余依赖
+- 升级项目前评估依赖健康度
+- 新接手项目，快速了解依赖状况
+
+**关键词：** npm、dependency、bloat、node_modules、optimize、bundle、cleanup、冗余依赖
 
 input_schema:
   project_path:
@@ -55,6 +63,21 @@ verification:
 # JS 依赖膨胀分析器
 
 基于 "The Three Pillars of JavaScript Bloat" 方法论，系统性分析和清理项目依赖。
+
+## Capabilities
+
+- 扫描并分析项目依赖树
+- 识别三大类型冗余依赖（老旧运行时、原子化微包、过期 ponyfills）
+- 推荐替代方案和迁移路径
+- 估算清理后的体积节省
+
+## Constraints
+
+- 仅支持 **JavaScript/Node.js 项目**（需存在 package.json）
+- 不处理**私有/企业内部包**（无法获取元数据分析）
+- 大型项目（>1000 个依赖）分析可能需要较长时间
+- 推荐的替代方案基于社区最佳实践，需测试验证兼容性
+- **auto_fix=true 时需谨慎**，建议先 review 再应用
 
 ## 三大膨胀类型
 
